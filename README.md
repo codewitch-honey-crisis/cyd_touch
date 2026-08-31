@@ -1,5 +1,3 @@
-# ttgo_multibutton
+# cyd_touch
 
-A little clicker app demonstrating the [htcw_ttgo library](https://github.com/codewitch-honey-crisis/htcw_ttgo)
-
-![TTGO clicker](ttgo.jpg)
+A little demo app demonstrating https://github.com/codewitch-honey-crisis/htcw_cyd28
