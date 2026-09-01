@@ -4,7 +4,7 @@
 #include "cyd28.hpp"
 #include "icons.hpp"
 #include "text_font_stream.hpp"
-#include "color_picker.hpp"
+
 #include "piano_box.hpp"
 // import the gfx and uix namespaces since we'll be using them all over
 using namespace gfx;
