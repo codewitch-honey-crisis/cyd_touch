@@ -121,18 +121,16 @@ static piano_box_t piano;
 
 static mask_draw_cache draw_cache;
 
+static void picker_on_color_changed(uix_pixel color, void* state) {
+    cyd28_led(color);
+}
 static void loop_task(void* arg) {
     TickType_t wdt_ts = xTaskGetTickCount();
-    uix::uix_pixel old_color;
     while (1) {
         // feed the watchdog timer
         if (xTaskGetTickCount() >= wdt_ts + pdMS_TO_TICKS(200)) {
             wdt_ts = xTaskGetTickCount();
             vTaskDelay(5);
-        }
-        if(old_color!=picker.color()) {
-            old_color = picker.color();
-            cyd28_led(old_color);
         }
         // must be called in app loop
         cyd28_update();
@@ -214,6 +212,7 @@ extern "C" void app_main(void) {
     sr = picker_screen.bounds();
     sr.inflate_inplace(-piano_back.dimensions().width,-piano_back.dimensions().height);
     picker.bounds(sr);
+    picker.on_color_changed_callback(picker_on_color_changed);
     picker_screen.register_control(picker);
     
     picker_back.bounds(srect16(spoint16::zero(),(ssize16)back_icon.dimensions()));
