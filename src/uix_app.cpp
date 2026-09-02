@@ -437,7 +437,7 @@ static void choose_button_on_release(void* state) {
 extern "C" void app_main(void) {
     // initialize the CYD28
     cyd28_init();
-    // set to whatever rotation you like
+    // set to whatever rotation you like (0-3 in 90 degree increments from default)
     cyd28_lcd_rotation(2); // landscape, flipped
     cyd28_lcd_metrics(&screen_metrics);
     // preallocate our draw cache (not necessary, but slightly better performance)
