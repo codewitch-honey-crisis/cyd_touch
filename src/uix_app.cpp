@@ -180,7 +180,7 @@ static int  strip_y0 = -1;            // image-space y of the pending strip's to
 static int  strip_h  = 0;             // rows accumulated in the pending strip
 static int  strip_cap = 0;            // rows the transfer buffer can hold at image width
 static bool jpg_aborted = false;      // set when image_mode drops mid-frame
-
+static cyd28_lcd_metrics_t screen_metrics;
 static int jpg_last_iw = -1, jpg_last_ih = -1;
 
 static int jpg_src_w = 0, jpg_src_h = 0;   // true 1:1 dimensions
@@ -271,10 +271,10 @@ static void jpg_fill_borders() {
     if (jpg_iw == jpg_last_iw && jpg_ih == jpg_last_ih) return;  // layout unchanged
     jpg_last_iw = jpg_iw; jpg_last_ih = jpg_ih;
     int l = jpg_ox, t = jpg_oy, r = jpg_ox + jpg_iw - 1, b = jpg_oy + jpg_ih - 1;
-    jpg_fill_black(0, 0, CYD28_LCD_WIDTH-1, t-1);                     // top
-    jpg_fill_black(0, b+1, CYD28_LCD_WIDTH-1, CYD28_LCD_HEIGHT-1);    // bottom
+    jpg_fill_black(0, 0, screen_metrics.width-1, t-1);                     // top
+    jpg_fill_black(0, b+1, screen_metrics.width-1, screen_metrics.height-1);    // bottom
     jpg_fill_black(0, t, l-1, b);                                     // left
-    jpg_fill_black(r+1, t, CYD28_LCD_WIDTH-1, b);                     // right
+    jpg_fill_black(r+1, t, screen_metrics.width-1, b);                     // right
 }
 void cyd28_on_lcd_flush_complete() {
     image_flushing = 0;               // buffer swap is driven by the draw code now
@@ -283,10 +283,10 @@ void cyd28_on_lcd_flush_complete() {
 static void jpg_begin_frame() {
     jpg_iw = (jpg_src_w + jpg_divisor - 1) / jpg_divisor;   // ceil
     jpg_ih = (jpg_src_h + jpg_divisor - 1) / jpg_divisor;
-    if (jpg_iw > CYD28_LCD_WIDTH)  jpg_iw = CYD28_LCD_WIDTH;   // safety clamp
-    if (jpg_ih > CYD28_LCD_HEIGHT) jpg_ih = CYD28_LCD_HEIGHT;
-    jpg_ox = (CYD28_LCD_WIDTH  - jpg_iw) / 2; if (jpg_ox < 0) jpg_ox = 0;
-    jpg_oy = (CYD28_LCD_HEIGHT - jpg_ih) / 2; if (jpg_oy < 0) jpg_oy = 0;
+    if (jpg_iw > screen_metrics.width)  jpg_iw = screen_metrics.width;   // safety clamp
+    if (jpg_ih > screen_metrics.height) jpg_ih = screen_metrics.height;
+    jpg_ox = (screen_metrics.width  - jpg_iw) / 2; if (jpg_ox < 0) jpg_ox = 0;
+    jpg_oy = (screen_metrics.height - jpg_ih) / 2; if (jpg_oy < 0) jpg_oy = 0;
     strip_cap = jpg_iw > 0 ? (int)(image_buf_size / ((size_t)jpg_iw * 2)) : 1;
     if (strip_cap < 1) strip_cap = 1;
     if (strip_cap > jpg_ih) strip_cap = jpg_ih;
@@ -437,6 +437,9 @@ static void choose_button_on_release(void* state) {
 extern "C" void app_main(void) {
     // initialize the CYD28
     cyd28_init();
+    // set to whatever rotation you like
+    cyd28_lcd_rotation(2); // landscape, flipped
+    cyd28_lcd_metrics(&screen_metrics);
     // preallocate our draw cache (not necessary, but slightly better performance)
     draw_cache.ensure(cyd28_default_screen.dimensions().width);
     bool sd_mounted = false;
@@ -533,7 +536,6 @@ extern "C" void app_main(void) {
         fs_dir = opendir("/sdcard/");
         
     }
-
     // start the app loop
     TaskHandle_t loop_handle;
     xTaskCreate(loop_task, "loop_task", 4096, nullptr, uxTaskPriorityGet(xTaskGetCurrentTaskHandle()), &loop_handle);
