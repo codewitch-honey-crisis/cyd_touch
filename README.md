@@ -2,6 +2,7 @@
 
 A little demo app demonstrating https://github.com/codewitch-honey-crisis/htcw_cyd28
 
+![Demo](./demo.jpg)
 
 Demonstrates using the CYD 2.8" 2 port revision with the ESP-IDF and the htcw_cyd library
 
