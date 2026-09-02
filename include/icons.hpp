@@ -25,14 +25,6 @@ constexpr static const gfx::size16 icons_music_scaled_dimensions(32,32);
 constexpr static const float icons_music_scale = 0.0625;
 /// @brief "Music" - a SVG vector icon
 extern gfx::const_buffer_stream icons_music;
-/// @brief "Circle Arrow Left" dimensions
-constexpr static const gfx::sizef icons_circle_arrow_left_dimensions(512,512);
-/// @brief "Circle Arrow Left" scaled dimensions
-constexpr static const gfx::size16 icons_circle_arrow_left_scaled_dimensions(32,32);
-/// @brief "Circle Arrow Left" target scale
-constexpr static const float icons_circle_arrow_left_scale = 0.0625;
-/// @brief "Circle Arrow Left" - a SVG vector icon
-extern gfx::const_buffer_stream icons_circle_arrow_left;
 /// @brief "Lightbulb" dimensions
 constexpr static const gfx::sizef icons_lightbulb_dimensions(384,512);
 /// @brief "Lightbulb" scaled dimensions
@@ -41,6 +33,22 @@ constexpr static const gfx::size16 icons_lightbulb_scaled_dimensions(24,32);
 constexpr static const float icons_lightbulb_scale = 0.0625;
 /// @brief "Lightbulb" - a SVG vector icon
 extern gfx::const_buffer_stream icons_lightbulb;
+/// @brief "Image" dimensions
+constexpr static const gfx::sizef icons_image_dimensions(512,512);
+/// @brief "Image" scaled dimensions
+constexpr static const gfx::size16 icons_image_scaled_dimensions(32,32);
+/// @brief "Image" target scale
+constexpr static const float icons_image_scale = 0.0625;
+/// @brief "Image" - a SVG vector icon
+extern gfx::const_buffer_stream icons_image;
+/// @brief "Circle Arrow Left" dimensions
+constexpr static const gfx::sizef icons_circle_arrow_left_dimensions(512,512);
+/// @brief "Circle Arrow Left" scaled dimensions
+constexpr static const gfx::size16 icons_circle_arrow_left_scaled_dimensions(32,32);
+/// @brief "Circle Arrow Left" target scale
+constexpr static const float icons_circle_arrow_left_scale = 0.0625;
+/// @brief "Circle Arrow Left" - a SVG vector icon
+extern gfx::const_buffer_stream icons_circle_arrow_left;
 #endif // ICONS_HPP
 
 #ifdef ICONS_IMPLEMENTATION
@@ -52,14 +60,6 @@ static const char* icons_music_data = "<svg xmlns=\"http://www.w3.org/2000/svg\"
 gfx::const_buffer_stream icons_music
     ((const uint8_t*)icons_music_data, 358);
 
-static const char* icons_circle_arrow_left_data = "<svg xmlns=\"http://www.w3.org/2000"
-    "/svg\" viewBox=\"0 0 512 512\"><path d=\"M512 256A256 256 0 1 0 0 256a256 256 0 1 0 "
-    "512 0zM215 127c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-71 71L392 232c13.3 0 24 "
-    "10.7 24 24s-10.7 24-24 24l-214.1 0 71 71c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 "
-    "0L103 273c-9.4-9.4-9.4-24.6 0-33.9L215 127z\"/></svg>";
-gfx::const_buffer_stream icons_circle_arrow_left
-    ((const uint8_t*)icons_circle_arrow_left_data, 326);
-
 static const char* icons_lightbulb_data = "<svg xmlns=\"http://www.w3.org/2000/svg\" vi"
     "ewBox=\"0 0 384 512\"><path d=\"M272 384c9.6-31.9 29.5-59.1 49.2-86.2c0 0 0 0 0 0c5"
     ".2-7.1 10.4-14.2 15.4-21.4c19.8-28.5 31.4-63 31.4-100.3C368 78.8 289.2 0 192 0S1"
@@ -69,4 +69,21 @@ static const char* icons_lightbulb_data = "<svg xmlns=\"http://www.w3.org/2000/s
     " 112-112c8.8 0 16 7.2 16 16s-7.2 16-16 16c-44.2 0-80 35.8-80 80z\"/></svg>";
 gfx::const_buffer_stream icons_lightbulb
     ((const uint8_t*)icons_lightbulb_data, 515);
+
+static const char* icons_image_data = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBo"
+    "x=\"0 0 512 512\"><path d=\"M448 80c8.8 0 16 7.2 16 16l0 319.8-5-6.5-136-176c-4.5-5"
+    ".9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152"
+    " 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3L48 96c0-8.8 7.2-16 16-16l384 0zM64 "
+    "32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-3"
+    "20c0-35.3-28.7-64-64-64L64 32zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z\"/></svg>";
+gfx::const_buffer_stream icons_image
+    ((const uint8_t*)icons_image_data, 447);
+
+static const char* icons_circle_arrow_left_data = "<svg xmlns=\"http://www.w3.org/2000"
+    "/svg\" viewBox=\"0 0 512 512\"><path d=\"M512 256A256 256 0 1 0 0 256a256 256 0 1 0 "
+    "512 0zM215 127c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-71 71L392 232c13.3 0 24 "
+    "10.7 24 24s-10.7 24-24 24l-214.1 0 71 71c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 "
+    "0L103 273c-9.4-9.4-9.4-24.6 0-33.9L215 127z\"/></svg>";
+gfx::const_buffer_stream icons_circle_arrow_left
+    ((const uint8_t*)icons_circle_arrow_left_data, 326);
 #endif // ICONS_IMPLEMENTATION
