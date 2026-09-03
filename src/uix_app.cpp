@@ -9,8 +9,10 @@
 #include "cyd28.hpp"
 #include "icons.hpp"
 #include "text_font_stream.hpp"
-
 #include "piano_box.hpp"
+
+#define BL_FULL 100
+
 // import the gfx and uix namespaces since we'll be using them all over
 using namespace gfx;
 using namespace uix;
@@ -187,6 +189,18 @@ static int jpg_last_iw = -1, jpg_last_ih = -1;
 static int jpg_src_w = 0, jpg_src_h = 0;   // true 1:1 dimensions
 // jpg_divisor already declared
 
+static bool bl_fade(int from, int to, uint32_t ms) {
+    const int steps = 16;
+    if (ms < (uint32_t)steps) ms = steps;
+    for (int i = 0; i <= steps; ++i) {
+        cyd28_backlight((uint8_t)(from + (to - from) * i / steps));
+        cyd28_update();
+        if (!image_mode) return false;
+        vTaskDelay(pdMS_TO_TICKS(ms / steps));
+    }
+    return true;
+}
+
 static bool jpg_fits(int divisor) {
     // ceiling division keeps us conservative on odd sizes so we never overshoot
     int sw = image_screen.dimensions().width;
@@ -310,6 +324,19 @@ static void jpg_flush_strip() {
         strip_y0 = -1; strip_h = 0;
         return;
     }
+     if (!image_mode) {                     // user left the slideshow -> abort
+        jpg_aborted = true;
+        strip_y0 = -1; strip_h = 0;
+        return;
+    }
+    // Ramp the backlight up in step with how far down the image we've drawn,
+    // so the picture "develops" from dark to full as it loads.
+    if (jpg_ih > 0) {
+        int done = strip_y0 + fh;                       // image rows done incl. this strip
+        int pct = (int)((long)done * BL_FULL / jpg_ih);
+        if (pct > BL_FULL) pct = BL_FULL;
+        cyd28_backlight((uint8_t)pct);
+    }
     uint8_t* p = jpg_fill_buffer();
     image_flushing = 1;
     cyd28_lcd_flush_bitmap(jpg_ox, jpg_oy + strip_y0,
@@ -373,6 +400,14 @@ static void loop_task(void* arg) {
 
             if(draw_now || xTaskGetTickCount() >= jpg_ts + pdMS_TO_TICKS(5000)) {
                 jpg_ts = xTaskGetTickCount();
+                // Fade the current image out before swapping. On the very first
+                // image nothing's shown yet, so just cut straight to dark.
+                if(draw_now) {
+                    cyd28_backlight(0);
+                } else if(!bl_fade(BL_FULL, 0, 300)) {
+                    cyd28_backlight(BL_FULL);   // user tapped out mid-fade
+                    continue;
+                }
                 bool got_jpg = false;
                 if(jpg_next()) {
                     got_jpg = true;
@@ -384,16 +419,23 @@ static void loop_task(void* arg) {
                 }
                 if(got_jpg) {
                     jpg_begin_frame();
-                    jpg_fill_borders();
+                    jpg_fill_borders();          // borders fill while the panel is dark
+                    // Clear the image rect too, so the previous frame doesn't
+                    // ghost through the not-yet-drawn rows during the ramp.
+                    jpg_fill_black(jpg_ox, jpg_oy, jpg_ox + jpg_iw - 1, jpg_oy + jpg_ih - 1);
                     gfx_result r = fs_jpg.draw((rect16)image_screen.bounds(), jpg_image_draw_callback);
                     if (r != gfx_result::canceled && !jpg_aborted) jpg_end_frame();
                     fs_stm.close();
                     fs_jpg.deinitialize();
                     if (r == gfx_result::canceled || jpg_aborted) {
+                        cyd28_backlight(BL_FULL);   // don't leave the menu dark
                         image_mode = false; in_image = false;
                         cyd28_display.active_screen(cyd28_default_screen);
                         continue;
                     }
+                    cyd28_backlight(BL_FULL);       // pin to full; last strip may round short
+                } else {
+                    cyd28_backlight(BL_FULL);       // nothing to show; don't sit dark
                 }
             }
         }
