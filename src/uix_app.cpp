@@ -115,13 +115,16 @@ static uint16_t note_to_freq(uint8_t note_num) {
     }
     return freq;
 }
+using label_t = label<cyd28_surface_t>;
 using button_t = painter<cyd28_surface_t>;
 using toucher_t = painter<cyd28_surface_t>;
 using color_picker_t = color_picker<cyd28_surface_t>;
 using piano_box_t = piano_box<cyd28_surface_t>;
 
 static bitmap<alpha_pixel<8>> back_icon, piano_icon, image_icon, picker_icon;
+static tt_font text_font(text_font_stream,30,font_size_units::px);
 cyd28_screen_t piano_screen,picker_screen,image_screen;
+static label_t title;
 static button_t piano_back,picker_back;
 static button_t piano_choose,picker_choose,image_choose;
 static color_picker_t picker;
@@ -499,8 +502,17 @@ extern "C" void app_main(void) {
     piano_icon = create_icon_data(icons_music,icons_music_dimensions,cyd28_default_screen.dimensions().height/5);
     picker_icon = create_icon_data(icons_lightbulb,icons_lightbulb_dimensions,cyd28_default_screen.dimensions().height/5);
     image_icon = create_icon_data(icons_image,icons_image_dimensions,cyd28_default_screen.dimensions().height/5);
+    text_font.initialize();
     // set up the screen and controls
     cyd28_default_screen.background_color(cyd28_color_t::white);
+
+    title.bounds(srect16(0,0,cyd28_default_screen.dimensions().width-1,text_font.line_height()-1).offset(0,text_font.line_height()));
+    title.color(uix_color_t::dark_goldenrod);
+    title.font(text_font);
+    title.text_justify(uix_justify::bottom_middle);
+    title.text("CYD 2.8\"");
+    cyd28_default_screen.register_control(title);
+
     piano_choose.bounds(((srect16)piano_icon.bounds()).center_vertical(cyd28_default_screen.bounds()).offset(10,0));
     piano_state.icon = &piano_icon;
     piano_state.color = uix_color_t::blue;
