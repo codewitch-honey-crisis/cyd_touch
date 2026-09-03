@@ -230,7 +230,7 @@ static bool jpg_next() {
                     return false;
                 }
                 fs_jpg_dim = fs_jpg.dimensions();
-                jpg_src_w = fs_jpg_dim.width;    // trustworthy: read before any scale is applied
+                jpg_src_w = fs_jpg_dim.width;    // read before any scale is applied
                 jpg_src_h = fs_jpg_dim.height;
                 jpg_scale scale = jpg_scale::scale_1_1;
                 int div = 1;
@@ -239,7 +239,7 @@ static bool jpg_next() {
                     else if(jpg_fits(4)) { scale = jpg_scale::scale_1_4; div = 4; }
                     else                 { scale = jpg_scale::scale_1_8; div = 8; }
                 }
-                jpg_divisor = div;   // <-- add, executes for both the scaled and the 1:1 path
+                jpg_divisor = div;  
                 if(scale!=jpg_scale::scale_1_1) {
                     fs_jpg.deinitialize();
                     fs_stm.seek(0);
