@@ -157,6 +157,7 @@ static stat_t fs_stat(const char* path) {
     stat(path, &s);
     return s;
 }
+
 static stat_t fs_st; 
 static dirent_t* fs_de;
 static DIR* fs_dir;
@@ -440,6 +441,8 @@ extern "C" void app_main(void) {
     // set to whatever rotation you like (0-3 in 90 degree increments from default)
     cyd28_lcd_rotation(2); // landscape, flipped
     cyd28_lcd_metrics(&screen_metrics);
+    cyd28_led_calibrate(200, 130, 255);        // gains only, gamma defaults to 2.8
+    
     // preallocate our draw cache (not necessary, but slightly better performance)
     draw_cache.ensure(cyd28_default_screen.dimensions().width);
     bool sd_mounted = false;
@@ -521,10 +524,10 @@ extern "C" void app_main(void) {
     
     // we don't actually use this screen directly
     // it serves as a stub to prevent other screens
-    // from refreshing the display while were writing
+    // from refreshing the display while we're writing
     // images to it.
     image_screen.dimensions(cyd28_default_screen.dimensions());
-    image_screen.background_color(cyd28_color_t::white);
+    image_screen.background_color(cyd28_color_t::black);
     image_toucher.bounds(image_screen.bounds());
     image_toucher.on_touch_callback(button_on_touch); // reuse this since it's trivial
     image_toucher.on_release_callback(toucher_on_release);
