@@ -123,7 +123,7 @@ using piano_box_t = piano_box<cyd28_surface_t>;
 
 static bitmap<alpha_pixel<8>> back_icon, piano_icon, image_icon, picker_icon;
 static tt_font text_font(text_font_stream,30,font_size_units::px);
-cyd28_screen_t piano_screen,picker_screen,image_screen;
+static cyd28_screen_t piano_screen,picker_screen,image_screen;
 static label_t title;
 static button_t piano_back,picker_back;
 static button_t piano_choose,picker_choose,image_choose;
