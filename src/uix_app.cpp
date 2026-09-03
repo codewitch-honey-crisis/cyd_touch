@@ -482,6 +482,7 @@ extern "C" void app_main(void) {
     cyd28_init();
     // set to whatever rotation you like (0-3 in 90 degree increments from default)
     cyd28_lcd_rotation(2); // landscape, flipped
+    cyd28_backlight(BL_FULL);
     cyd28_lcd_metrics(&screen_metrics);
     cyd28_led_calibrate(200, 130, 255);        // gains only, gamma defaults to 2.8
     
