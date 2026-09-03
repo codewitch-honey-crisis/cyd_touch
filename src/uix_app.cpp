@@ -86,7 +86,7 @@ error:
 
 // Rounded frequencies for octave 4 (C4..B4), in Hz.
 // C4 D4  E   F   G   A   B, chromatic including sharps.
-const uint16_t note_freqs[12] = {
+static const uint16_t note_freqs[12] = {
     262,  // C4
     277,  // C#4
     294,  // D4
